@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LockPad — Liquidity locked forever. The fees are yours to keep or sell.</title>
+<meta name="description" content="LockPad is a launchpad on Robinhood Chain. Every coin launches with its liquidity locked forever in a contract that has no way out. The trading fees go to whoever holds the key, and the key can be sold.">
+<meta property="og:title" content="LockPad — liquidity locked forever, fees you can sell">
+<meta property="og:description" content="Every coin launches with its liquidity locked forever. The fees go to whoever holds the key. Keep it or sell it.">
+<meta property="og:image" content="og.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Hanken+Grotesk:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c0f; --bg2:#0e1115; --panel:#12161b; --panel2:#181d24; --ink:#eef0f3; --mute:#9aa3ae; --dim:#5f6873;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.15);
+  --acc:#f2b632; --acc2:#ffcf5e; --ok:#54d98c; --warn:#ffb84d; --bad:#ff5a4a; --steel:#8fa0b3;
+  --fd:"Archivo",system-ui,sans-serif; --ft:"Hanken Grotesk",system-ui,sans-serif; --fm:"Geist Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ft);font-size:16px;line-height:1.55;overflow-x:clip;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(800px 480px at 88% -5%,rgba(242,182,50,.13),transparent 60%),
+  radial-gradient(700px 420px at -5% 100%,rgba(143,160,179,.10),transparent 60%),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 96px)}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:var(--fd);font-weight:700;font-stretch:112%;letter-spacing:-.02em;margin:0}
+p{margin:0}
+.mono{font-family:var(--fm)}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px}
+button{font-family:inherit;cursor:pointer;color:inherit}
+input{font-family:inherit;color:inherit}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(10,12,15,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:14px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-size:20px;font-weight:800;font-stretch:115%;letter-spacing:-.02em}
+.brand img{width:30px;height:30px;border-radius:8px}
+nav.main{display:flex;gap:16px;margin-left:12px;font-size:13px;color:var(--mute);white-space:nowrap}
+nav.main a b{font-family:var(--fm);font-weight:500;color:var(--acc);margin-right:5px}
+nav.main a:hover{color:var(--ink)}
+.hd .sp{flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line2);background:transparent;color:var(--ink);padding:10px 16px;border-radius:10px;font-size:13.5px;font-weight:600;transition:.15s;line-height:1.2;white-space:nowrap}
+.btn:hover{border-color:rgba(255,255,255,.4)}
+.btn.acc{background:var(--acc);color:#1b1303;border-color:var(--acc)}
+.btn.acc:hover{background:var(--acc2);border-color:var(--acc2)}
+.btn.ghost{color:var(--mute)}
+.btn.small{padding:8px 12px;font-size:12.5px}
+.btn.danger{border-color:rgba(255,90,74,.45);color:#ff8a7e}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+
+/* marquee */
+.mq{border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;font-family:var(--fm);font-size:11.5px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.mq div{display:inline-block;padding:8px 0;animation:mq 60s linear infinite}
+.mq span{margin:0 22px}
+.mq span b{color:var(--acc);font-weight:500}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* hero */
+.hero{padding:clamp(22px,5svh,60px) 0 clamp(28px,6svh,64px);display:grid;grid-template-columns:1.02fr 1fr;gap:48px;align-items:center}
+.hero>*{min-width:0}
+.kicker{font-family:var(--fm);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:16px}
+h1{font-size:min(clamp(34px,4.7vw,62px),9svh);line-height:1;font-weight:800}
+h1 span{color:var(--acc)}
+.lead{font-size:clamp(15.5px,1.35vw,18px);color:var(--mute);max-width:560px;margin:18px 0 22px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--fm);font-size:11.5px;border:1px solid var(--line2);border-radius:8px;padding:5px 10px;color:var(--mute);cursor:default}
+.chip b{color:var(--ink);font-weight:500}
+#caBox{cursor:pointer}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:clamp(16px,3.4svh,30px);padding-top:clamp(14px,2.6svh,22px);border-top:1px solid var(--line)}
+.facts b{display:block;font-family:var(--fd);font-size:20px;font-weight:700;margin-bottom:2px}
+.facts span{font-size:13px;color:var(--mute)}
+
+/* lock panel */
+.lockp{position:relative;border:1px solid var(--line2);border-radius:20px;background:linear-gradient(180deg,#151a20,#0f1317);box-shadow:0 40px 90px -40px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.03) inset;overflow:hidden}
+.lockp::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 220px at 18% 0%,rgba(242,182,50,.14),transparent 70%);pointer-events:none}
+.lp-h{position:relative;display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.lp-h .demo{border:1px dashed var(--line2);border-radius:6px;padding:2px 7px;color:var(--dim)}
+.lp-h .st{margin-left:auto;color:var(--ok);display:flex;align-items:center;gap:7px}
+.lp-h .st i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(84,217,140,.18);animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.lp-top{position:relative;display:grid;grid-template-columns:150px 1fr;gap:18px;align-items:center;padding:16px 18px 8px}
+.lockbox{position:relative;width:150px;height:150px;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dial{position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(143,160,179,.55) 0 1deg,transparent 1deg 9deg);mask:radial-gradient(circle,transparent 61%,#000 62%,#000 69%,transparent 70%);-webkit-mask:radial-gradient(circle,transparent 61%,#000 62%,#000 69%,transparent 70%);animation:spin 40s linear infinite}
+.dial2{position:absolute;inset:9px;border-radius:50%;border:1px solid var(--line2)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lockbox svg{position:relative;width:86px;height:auto;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55));transition:transform .15s}
+.lockbox:hover svg{transform:translateY(-2px)}
+.lockbox.shake svg{animation:shake .45s}
+.lockbox.pay svg{animation:pay .4s}
+@keyframes shake{0%,100%{transform:none}15%{transform:translateX(-7px) rotate(-5deg)}30%{transform:translateX(7px) rotate(5deg)}45%{transform:translateX(-5px) rotate(-3deg)}60%{transform:translateX(5px) rotate(3deg)}80%{transform:translateX(-2px)}}
+@keyframes pay{40%{transform:scale(1.09)}}
+.hint{position:absolute;top:-2px;left:-4px;background:var(--acc);color:#1b1303;font-family:var(--fm);font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:6px;white-space:nowrap;transform:rotate(-5deg);box-shadow:0 8px 18px rgba(0,0,0,.45);z-index:4;animation:bob 2.4s ease-in-out infinite alternate;pointer-events:none}
+@keyframes bob{to{transform:rotate(-5deg) translateY(-4px)}}
+#drop{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:6}
+.coin{position:absolute;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1b8,#f2b632 55%,#a9731a);border:1.5px solid #7a5310;display:grid;place-items:center;font:700 12px var(--fm);color:#6a460b;will-change:transform}
+.un small{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+.un b{display:block;font-family:var(--fm);font-weight:600;font-size:clamp(28px,3.2vw,40px);letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.un b em{font-style:normal;font-size:.4em;color:var(--mute);letter-spacing:.06em;margin-left:6px}
+.un>span{display:block;font-family:var(--fm);font-size:11.5px;color:var(--mute);margin-top:8px}
+.un>span i{font-style:normal;color:var(--ink)}
+.rows{position:relative;margin:6px 18px 0;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.rows div span{color:var(--mute)}
+.rows div b{font-family:var(--fm);font-weight:500;font-size:12.5px;text-align:right}
+.lp-act{position:relative;display:flex;gap:8px;padding:12px 18px 0;flex-wrap:wrap}
+.lp-act .btn{flex:1}
+.log{position:relative;margin:10px 18px 14px;font-family:var(--fm);font-size:11.5px;height:66px;overflow:hidden;mask-image:linear-gradient(#000 55%,transparent);-webkit-mask-image:linear-gradient(#000 55%,transparent)}
+.log div{display:grid;grid-template-columns:1fr auto;gap:10px;padding:3px 0;color:var(--mute);animation:rowin .3s ease-out}
+.log div b{font-weight:500;color:var(--ok);font-variant-numeric:tabular-nums}
+.log div.rv,.log div.rv b{color:#ff8a7e}
+.log div.cl b{color:var(--acc)}
+@keyframes rowin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.badge5{position:absolute;right:14px;top:50px;background:#1b1303;color:var(--acc);border:1px solid var(--acc);font-family:var(--fm);font-size:10px;letter-spacing:.1em;padding:5px 8px;border-radius:6px;transform:rotate(4deg) scale(0);transition:transform .35s cubic-bezier(.2,1.5,.4,1);z-index:5}
+.badge5.on{transform:rotate(4deg) scale(1)}
+
+/* sections */
+section{padding:clamp(56px,9vh,96px) 0;border-top:1px solid var(--line);position:relative}
+.sh{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:end;margin-bottom:34px}
+.num{font-family:var(--fd);font-weight:800;font-stretch:125%;font-size:110px;line-height:.8;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.16)}
+.sh h2{font-size:clamp(28px,3.4vw,42px);line-height:1.05}
+.sh p{color:var(--mute);max-width:640px;margin-top:10px}
+.card{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:22px}
+.card .k{font-family:var(--fm);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin-bottom:10px}
+.card h3{font-size:19px;margin-bottom:8px}
+.card p{color:var(--mute);font-size:14.5px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid2>*,.grid4>*{min-width:0}
+
+/* lookup */
+.look{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start}
+.look>*{min-width:0}
+.find{display:flex;gap:8px}
+.find input{flex:1;min-width:0;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;padding:12px 14px;font-family:var(--fm);font-size:14px;outline:none}
+.find input:focus{border-color:var(--acc)}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 16px}
+.quick button{background:transparent;border:1px solid var(--line);border-radius:7px;padding:4px 9px;font-family:var(--fm);font-size:11.5px;color:var(--mute)}
+.quick button:hover{border-color:var(--acc);color:var(--ink)}
+.rec{border:1px solid var(--line);border-radius:14px;background:var(--bg2);overflow:hidden}
+.rec-h{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.rec-h .tk{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;font-family:var(--fd);font-weight:800;color:#0a0c0f;flex:none}
+.rec-h b{font-family:var(--fd);font-size:18px}
+.rec-h small{display:block;font-family:var(--fm);font-size:11px;color:var(--mute)}
+.rec-h .tag{margin-left:auto;font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;padding:4px 8px;border-radius:6px;background:rgba(84,217,140,.13);color:var(--ok);white-space:nowrap}
+.rec-h .tag.no{background:rgba(255,255,255,.06);color:var(--mute)}
+.kv{display:grid;grid-template-columns:1fr 1fr}
+.kv div{padding:11px 16px;border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.kv div:nth-child(2n){border-right:0}
+.kv span{display:block;font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.kv b{font-family:var(--fm);font-weight:500;font-size:14px;font-variant-numeric:tabular-nums}
+.fn{padding:12px 16px;font-family:var(--fm);font-size:12px;display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+.fn div{display:flex;justify-content:space-between;gap:8px;color:var(--mute)}
+.fn div b{font-weight:500}
+.fn .y b{color:var(--ok)} .fn .n b{color:#ff8a7e}
+.rec-f{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rec-f small{color:var(--dim);font-size:12px}
+.steps{display:grid;gap:10px}
+.steps .card{padding:16px 18px}
+.steps .card h3{font-size:16px;margin-bottom:4px}
+
+/* how */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px}
+.flow>*{min-width:0}
+.bar{display:flex;height:46px;border-radius:12px;overflow:hidden;font-family:var(--fm);font-size:12px;margin:0 0 16px;border:1px solid var(--line)}
+.bar div{display:flex;align-items:center;padding:0 14px;white-space:nowrap;overflow:hidden}
+.bar .a{width:80%;background:linear-gradient(90deg,#f2b632,#ffcf5e);color:#1b1303;font-weight:600}
+.bar .b{width:20%;background:#232a33;color:var(--ink)}
+
+/* desk */
+.desk{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.desk>*{min-width:0}
+.ctl{margin-bottom:20px}
+.ctl label{display:flex;justify-content:space-between;font-size:13.5px;color:var(--mute);margin-bottom:8px}
+.ctl label b{font-family:var(--fm);font-weight:500;color:var(--ink)}
+input[type=range]{width:100%;appearance:none;-webkit-appearance:none;height:4px;border-radius:4px;background:#2a323c;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--acc);border:3px solid #1b1303;box-shadow:0 0 0 1px var(--acc);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--acc);border:3px solid #1b1303;cursor:pointer}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.seg button{background:var(--bg2);border:1px solid var(--line2);border-radius:9px;padding:9px 0;font-family:var(--fm);font-size:13px;color:var(--mute)}
+.seg button.on{background:var(--acc);border-color:var(--acc);color:#1b1303;font-weight:600}
+.outs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:4px}
+.outs div{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--bg2);min-width:0}
+.outs span{display:block;font-family:var(--fm);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.outs b{font-family:var(--fm);font-weight:600;font-size:17px;font-variant-numeric:tabular-nums}
+.keycard{position:relative;border-radius:18px;padding:24px;background:linear-gradient(140deg,#1d232b,#12161b 60%);border:1px solid rgba(242,182,50,.35);overflow:hidden}
+.keycard::before{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:repeating-conic-gradient(rgba(242,182,50,.22) 0 1deg,transparent 1deg 8deg);mask:radial-gradient(circle,transparent 58%,#000 59%,#000 66%,transparent 67%);-webkit-mask:radial-gradient(circle,transparent 58%,#000 59%,#000 66%,transparent 67%)}
+.keycard .kt{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.keycard .kt svg{width:40px;height:40px;flex:none}
+.keycard .kt b{font-family:var(--fd);font-size:20px;font-weight:800;font-stretch:115%}
+.keycard .kt small{display:block;font-family:var(--fm);font-size:11px;color:var(--mute);letter-spacing:.08em}
+.ask{font-family:var(--fm);font-weight:600;font-size:clamp(30px,3.6vw,44px);letter-spacing:-.03em;line-height:1;color:var(--acc);font-variant-numeric:tabular-nums}
+.ask small{display:block;font-size:10.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.keycard ul{list-style:none;padding:0;margin:18px 0;border-top:1px solid var(--line)}
+.keycard li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--mute)}
+.keycard li b{font-family:var(--fm);font-weight:500;color:var(--ink);font-size:12.5px;text-align:right}
+.stamp{position:absolute;right:26px;top:84px;font-family:var(--fd);font-weight:800;font-stretch:125%;font-size:30px;letter-spacing:.06em;color:var(--ok);border:3px solid var(--ok);border-radius:8px;padding:2px 12px;transform:rotate(-11deg) scale(2.2);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.3,1.5,.5,1),opacity .15s}
+.stamp.on{transform:rotate(-11deg) scale(1);opacity:.92}
+.note{font-size:13px;color:var(--dim);margin-top:14px}
+
+/* market */
+.mk{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;align-items:start}
+.mk>*{min-width:0}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{font-family:var(--fm);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px;border-bottom:1px solid var(--line);font-family:var(--fm);font-size:12.5px;font-variant-numeric:tabular-nums}
+.tbl tr{cursor:pointer}
+.tbl tbody tr:hover td{background:rgba(255,255,255,.03)}
+.tbl td:first-child{font-family:var(--ft);font-weight:600;font-size:14px}
+.tbl .s{font-size:10.5px;letter-spacing:.08em;padding:3px 7px;border-radius:5px;background:rgba(242,182,50,.14);color:var(--acc)}
+.tbl .s.sold{background:rgba(255,255,255,.06);color:var(--mute)}
+.sample{font-family:var(--fm);font-size:10.5px;letter-spacing:.1em;color:var(--dim);border:1px dashed var(--line2);border-radius:6px;padding:2px 7px;margin-left:8px;vertical-align:middle}
+.feed{font-family:var(--fm);font-size:12px;height:380px;overflow:hidden;mask-image:linear-gradient(#000 75%,transparent);-webkit-mask-image:linear-gradient(#000 75%,transparent)}
+.feed div{display:grid;grid-template-columns:44px 1fr auto;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);animation:rowin .35s ease-out;color:var(--mute)}
+.feed div span:first-child{color:var(--dim)}
+.feed div b{font-weight:500;color:var(--ok)}
+.feed div.sale b{color:var(--acc)}
+
+/* token */
+.burn{display:flex;flex-direction:column;justify-content:space-between;min-height:100%}
+.burn .big{font-family:var(--fm);font-weight:600;font-size:clamp(30px,3.6vw,46px);letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;margin:6px 0 10px}
+.ptbl{width:100%;border-collapse:collapse;font-size:14px}
+.ptbl td{padding:9px 0;border-bottom:1px solid var(--line);color:var(--mute)}
+.ptbl td:last-child{text-align:right;color:var(--ink);font-family:var(--fm);font-size:12.5px}
+.ptbl tr:last-child td{border-bottom:0}
+.bk-act{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+/* rollout + final */
+.roll{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.roll>*{min-width:0}
+.roll .card .k{color:var(--steel)}
+.roll .card.now .k{color:var(--ok)}
+.final{margin-top:34px;border-radius:22px;padding:40px;display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center;background:linear-gradient(120deg,#f2b632,#ffcf5e 60%,#ffe39a);color:#1b1303}
+.final h2{font-size:clamp(26px,3.2vw,40px);line-height:1.05}
+.final p{margin-top:10px;color:#4a3608;max-width:520px}
+.final .cta{justify-content:flex-end;margin:0}
+.final .btn{border-color:#1b1303;color:#1b1303}
+.final .btn.dark{background:#1b1303;color:#ffe39a}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;font-size:12.5px;color:var(--dim)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+#rain{position:fixed;inset:0;pointer-events:none;z-index:140;overflow:hidden}
+
+/* wallet modal */
+.hd-w{white-space:nowrap}
+.hd-w.bad{border-color:rgba(255,90,74,.6);color:var(--bad)}
+.wdot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(84,217,140,.18);margin-right:8px;vertical-align:1px}
+.wdot.bad{background:var(--bad);box-shadow:0 0 0 3px rgba(255,90,74,.18)}
+.ov{position:fixed;inset:0;z-index:110;background:rgba(4,6,9,.76);display:none;align-items:center;justify-content:center;padding:16px}
+.ov.show{display:flex;animation:fade .15s}
+@keyframes fade{from{opacity:0}}
+@keyframes rise{from{transform:translateY(8px);opacity:.6}}
+.modal{border-radius:20px;width:100%;max-width:430px;background:var(--panel);border:1px solid rgba(255,255,255,.16);border-radius:16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.9);overflow:hidden;animation:rise .2s;max-height:calc(100svh - 32px);display:flex;flex-direction:column}
+.modal-h{display:flex;align-items:center;gap:10px;padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+.modal-h h3{font-size:16px;font-weight:600}
+.modal-h .x{background:transparent;margin-left:auto;width:32px;height:32px;border-radius:8px;border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;color:var(--mute)}
+.modal-h .x:hover{border-color:rgba(255,255,255,.35);color:var(--ink)}
+.modal-b{padding:16px 18px 18px;overflow-y:auto}
+.netcard{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(0,0,0,.22);margin-bottom:14px}
+.netcard .ic{width:34px;height:34px;border-radius:9px;background:var(--panel2);border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+.netcard b{display:block;font-size:14px;font-weight:600}
+.netcard span{font-family:var(--fm);font-size:11px;color:var(--mute)}
+.wlist{display:grid;gap:8px}
+.wopt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:10px 12px;transition:border-color .12s,box-shadow .12s}
+.wopt:hover{border-color:rgba(255,255,255,.35);box-shadow:0 0 0 3px rgba(242,182,50,.16)}
+.wopt img,.wopt .gic{width:30px;height:30px;border-radius:8px;flex:none;object-fit:contain}
+.wopt .gic{background:var(--line);display:grid;place-items:center}
+.wopt b{font-weight:500;font-size:14.5px}
+.wopt .badge{margin-left:auto;font-family:var(--fm);font-size:10px;letter-spacing:.06em;padding:3px 7px;border-radius:5px;background:rgba(84,217,140,.14);color:var(--ok)}
+.wopt.busy .badge{background:rgba(255,184,77,.18);color:var(--warn)}
+.wopt .lg{width:30px;height:30px;border-radius:8px;flex:none;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff}
+.wopt .chev{margin-left:auto;color:var(--dim);transition:transform .15s}
+.wopt.open .chev{transform:rotate(90deg)}
+.whelp{display:none;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;margin-top:-10px;padding:16px 13px 12px;background:rgba(0,0,0,.22);font-size:13px;color:var(--mute);line-height:1.55}
+.whelp.show{display:block}
+.whelp b{color:var(--ink);font-weight:600}
+.whelp ol{margin:6px 0 10px;padding-left:18px}
+.whelp .acts{display:flex;flex-wrap:wrap;gap:6px}
+.whelp code{font-family:var(--fm);font-size:11.5px;background:var(--panel2);border:1px solid rgba(255,255,255,.16);border-radius:5px;padding:1px 5px;word-break:break-all;color:var(--ink)}
+.msec{font-family:var(--fm);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin:16px 0 8px;display:flex;justify-content:space-between}
+.wc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid rgba(59,153,252,.5);border-radius:12px;background:rgba(59,153,252,.08);padding:10px 12px}
+.wc:hover{box-shadow:0 0 0 3px rgba(59,153,252,.16)}
+.wc b{font-weight:500}
+.wc small{margin-left:auto;font-family:var(--fm);font-size:11px;color:#7db8ff}
+.merr{margin-top:12px;font-size:13px;color:#ff8a7e;display:none;background:rgba(255,90,74,.08);border:1px solid rgba(255,90,74,.3);border-radius:10px;padding:10px 12px}
+.merr.show{display:block}
+.mfoot{margin-top:14px;font-size:12px;color:var(--dim);line-height:1.5}
+.wacct{display:grid;gap:10px}
+.wacct .who{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(0,0,0,.22)}
+.wacct .who canvas{width:40px;height:40px;border-radius:10px;flex:none}
+.wacct .who b{font-family:var(--fm);font-weight:500;font-size:14px;display:block}
+.wacct .who span{font-size:12px;color:var(--mute)}
+.wacct .who .cp{margin-left:auto}
+.wkv{border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.22)}
+.wkv div{display:flex;justify-content:space-between;gap:10px;padding:9px 14px;font-size:13.5px;border-bottom:1px solid var(--line)}
+.wkv div:last-child{border-bottom:0}
+.wkv span{color:var(--mute)}
+.wkv b{font-family:var(--fm);font-weight:500;text-align:right}
+.wkv b.ok{color:var(--ok)} .wkv b.bad{color:var(--bad)}
+.wacct .btns{display:flex;gap:8px}
+.wacct .btns .btn{flex:1}
+.lastq{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(0,0,0,.22);font-family:var(--fm);font-size:11.5px;color:var(--mute);line-height:1.6;word-break:break-all}
+.lastq h4{font-weight:500;font-size:10.5px;letter-spacing:.12em;color:var(--dim);margin-bottom:6px}
+.lastq b{color:var(--ink);font-weight:500}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#0a0c0f;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:0 12px 30px rgba(0,0,0,.5);max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%)}
+
+@media (max-width:1240px){nav.main{display:none}}
+@media (max-width:1000px){
+  .hero{grid-template-columns:1fr;gap:26px;padding-top:26px}
+  .hero>div:last-child{order:-1}
+  .look,.desk,.grid2,.final,.mk{grid-template-columns:1fr}
+  .flow,.grid4{grid-template-columns:1fr 1fr}
+  .roll{grid-template-columns:1fr}
+  .final .cta{justify-content:flex-start}
+  .num{font-size:76px}
+}
+@media (max-width:560px){
+  .wrap{padding:0 16px}
+  .facts{grid-template-columns:1fr 1fr 1fr;gap:10px}.facts b{font-size:16px}.facts span{font-size:11.5px}
+  .flow,.grid4{grid-template-columns:1fr}
+  .hd{gap:5px}.brand{font-size:16px;gap:6px}.brand img{width:26px;height:26px}
+  .hd .btn.small{padding:7px 8px;font-size:11px}
+  .hd .btn span.t{display:none}
+  .hd-w .wl{font-size:0}.hd-w .wl::after{content:"Wallet";font-size:11px}
+  .lp-top{grid-template-columns:104px 1fr;gap:12px;padding-top:30px}
+  .hint{top:-24px;left:-2px}
+  .lp-h{font-size:10px;letter-spacing:.06em;gap:6px;padding:12px 14px;white-space:nowrap}
+  .bar .b i{display:none}
+  .lockbox{width:104px;height:104px}.lockbox svg{width:60px}
+  .sh{grid-template-columns:1fr;gap:8px}
+  .final{padding:26px 20px}
+  .outs{grid-template-columns:1fr 1fr}
+  .tbl td:nth-child(3),.tbl th:nth-child(3),.tbl td:nth-child(5),.tbl th:nth-child(5){display:none}
+  .tbl td,.tbl th{padding-left:6px;padding-right:6px}
+  .bar{font-size:10px}.bar div{padding:0 8px}
+  .fn{grid-template-columns:1fr}
+  .stamp{font-size:20px;top:22px;right:16px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap hd">
+    <a class="brand" href="#top"><img src="assets/logo-96.png" alt="LockPad padlock logo">LockPad</a>
+    <nav class="main">
+      <a href="#lookup"><b>01</b>Look up a lock</a>
+      <a href="#how"><b>02</b>How it works</a>
+      <a href="#desk"><b>03</b>Price a key</a>
+      <a href="#market"><b>04</b>Key market</a>
+      <a href="#token"><b>05</b>$LOCKPAD</a>
+    </nav>
+    <div class="sp"></div>
+    <button class="btn small ghost" id="sndBtn" type="button" aria-pressed="true">SOUND · ON</button>
+    <a class="btn small acc" id="buyBtn" href="#"><span class="t">Buy&nbsp;</span>$LOCKPAD</a>
+    <button class="btn small hd-w" id="wBtn" type="button"><span class="wl">Connect wallet</span></button>
+  </div>
+</header>
+<div class="mq" aria-hidden="true"><div id="mq"></div></div>
+
+<main id="top">
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="kicker">Launchpad · Robinhood Chain</div>
+      <h1>Liquidity locked forever. <span>The fees are yours to keep or sell.</span></h1>
+      <p class="lead">Every coin on LockPad launches with all of its liquidity sealed in a contract that has no way out. Nobody can pull it, not the creator and not us. The trading fees it earns go to whoever holds the key, and the key can be sold like anything else.</p>
+      <div class="cta">
+        <a class="btn acc" href="#desk">Price your key</a>
+        <a class="btn" href="#lookup">Look up a lock</a>
+        <a class="btn ghost xLink" id="xBtn" href="#">Follow on X</a>
+      </div>
+      <div class="chips">
+        <span class="chip" id="caBox">CA · <b class="ca-val">at launch</b></span>
+        <span class="chip">POOL FEE <b>1%</b></span>
+        <span class="chip">SPLIT <b>80 / 20</b></span>
+        <span class="chip">CHAIN <b>4663</b></span>
+      </div>
+      <div class="facts">
+        <div><b>0</b><span>ways to withdraw the liquidity</span></div>
+        <div><b>80%</b><span>of pool fees go to the key holder</span></div>
+        <div><b>1 key</b><span>per coin, whole or in shares</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="lockp" id="lockp">
+        <div class="lp-h"><span>Lock #0412 · $PAWS</span><span class="demo">demo</span><span class="st"><i></i>Locked forever</span></div>
+        <div class="badge5" id="badge5">EVERY DOOR CHECKED</div>
+        <div class="lp-top">
+          <div class="lockbox" id="lockbox" role="button" tabindex="0" aria-label="Poke the lock. It pays out the fees.">
+            <span class="hint">poke the lock · it pays</span>
+            <div class="dial"></div><div class="dial2"></div>
+            <svg viewBox="0 0 120 150" aria-hidden="true">
+              <defs>
+                <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset=".5" stop-color="#f2b632"/><stop offset="1" stop-color="#a9731a"/></linearGradient>
+                <linearGradient id="gS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#6d7c8c"/><stop offset=".5" stop-color="#dfe7ef"/><stop offset="1" stop-color="#6d7c8c"/></linearGradient>
+              </defs>
+              <path d="M30 66V44a30 30 0 0 1 60 0v22" fill="none" stroke="url(#gS)" stroke-width="13" stroke-linecap="round"/>
+              <rect x="10" y="62" width="100" height="82" rx="16" fill="url(#gB)" stroke="#7a5310" stroke-width="2"/>
+              <rect x="18" y="70" width="84" height="66" rx="10" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+              <circle cx="60" cy="97" r="10" fill="#2a1c05"/><path d="M55 100h10l3 22H52z" fill="#2a1c05"/>
+            </svg>
+            <div id="drop"></div>
+          </div>
+          <div class="un">
+            <small>Unclaimed fees</small>
+            <b><span id="unV">1,284.37</span><em>USDG</em></b>
+            <span>lifetime <i id="lifeV">$48,210</i> · claimed <i id="clV">$46,926</i></span>
+          </div>
+        </div>
+        <div class="rows">
+          <div><span>LP position</span><b>#2,187 · the whole supply</b></div>
+          <div><span>Key holder</span><b id="keyH">0x7a41…c21e · creator</b></div>
+          <div><span>Fee split</span><b>80% key holder · 20% buy &amp; burn</b></div>
+        </div>
+        <div class="lp-act">
+          <button class="btn acc" id="claimBtn" type="button">Claim fees</button>
+          <button class="btn danger" id="wdBtn" type="button">Try to withdraw the LP</button>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 01 LOOKUP -->
+<section id="lookup">
+  <div class="wrap">
+    <div class="sh"><div class="num">01</div><div><h2>Look up any lock</h2><p>Every launch leaves a public record: where the liquidity sits, who holds the key, what the lock has earned and what is waiting to be claimed. Type a ticker and read it like a receipt.</p></div></div>
+    <div class="look">
+      <div>
+        <div class="find"><input id="q" type="text" placeholder="$TICKER or 0x address" autocomplete="off" spellcheck="false" aria-label="Ticker or address"><button class="btn acc" id="qBtn" type="button">Open lock</button></div>
+        <div class="quick" id="quick"></div>
+        <div class="rec" id="rec"></div>
+      </div>
+      <div class="steps">
+        <div class="card"><div class="k">What you are reading</div><h3>The locker has five functions. None of them is a way out.</h3><p>It can collect fees, report what it holds, and pay the key. It cannot decrease the position, burn it, transfer it or hand it to a new owner, because those functions were never written. There is no admin and no upgrade path, so nobody can add them later.</p></div>
+        <div class="card"><div class="k">Who can press claim</div><h3>Anyone. The money still goes to the key.</h3><p>Claiming is open to every address, which means fees never get stuck behind a lost wallet or a sleeping creator. The caller pays the gas and receives nothing. The key holder receives 80%, and 20% buys $LOCKPAD on the open market and burns it.</p></div>
+        <div class="card"><div class="k">Sample data</div><p>The launchpad opens after the $LOCKPAD launch. Until then the records on this page are generated examples that show the format, and none of them are live coins.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="sh"><div class="num">02</div><div><h2>How it works</h2><p>Four steps, and only the last one is a decision. Everything before it happens in the launch transaction and cannot be changed afterwards.</p></div></div>
+    <div class="flow">
+      <div class="card"><div class="k">Launch</div><h3>One transaction</h3><p>Name, ticker, picture. The full supply goes straight into a 1% pool on Robinhood Chain. There is no presale, no team allocation and no second phase where liquidity moves somewhere else.</p></div>
+      <div class="card"><div class="k">Lock</div><h3>Sealed at block one</h3><p>The liquidity position is handed to a locker contract in the same transaction. The locker has no function that removes, moves or burns it, so the floor under the coin cannot be pulled by anyone.</p></div>
+      <div class="card"><div class="k">Earn</div><h3>Every trade pays the lock</h3><p>The pool charges 1% on every swap. Those fees pile up inside the lock in USDG and in the coin itself, visible to everyone, until someone presses claim.</p></div>
+      <div class="card"><div class="k">Keep or sell</div><h3>The key is the asset</h3><p>The creator gets the key at launch. Hold it and collect for as long as the coin trades, or list all of it or a share of it on the key market and take the money now.</p></div>
+    </div>
+    <div class="bar"><div class="a">80% · key holder, paid in USDG and the coin</div><div class="b">20% · burn<i style="font-style:normal">&nbsp;$LOCKPAD</i></div></div>
+    <div class="grid4">
+      <div class="card"><div class="k">What is locked</div><p>The whole liquidity position, for good. Not for a year and not until a vote. Traders can always buy and always sell against it, whatever happens to the creator.</p></div>
+      <div class="card"><div class="k">What the key is</div><p>A token that points at one lock. Whoever holds it receives that lock's fees. It can be split into 100 shares, and each share is paid its part on every claim.</p></div>
+      <div class="card"><div class="k">If the creator sells</div><p>Nothing changes for holders of the coin. The liquidity stays where it is and the pool keeps working. Only the address that receives the fees is different.</p></div>
+      <div class="card"><div class="k">If the coin goes quiet</div><p>Fees follow volume. A coin nobody trades pays its key nothing, and a key on it is worth what a buyer believes about tomorrow. Price keys the way you would price any cash flow that can stop.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 DESK -->
+<section id="desk">
+  <div class="wrap">
+    <div class="sh"><div class="num">03</div><div><h2>Price a key</h2><p>A key is a stream of fees, so it prices like one. Set the volume you expect, pick how much of the key to sell, and choose how many months of fees a buyer should pay up front.</p></div></div>
+    <div class="desk">
+      <div class="card">
+        <div class="ctl"><label>Daily trading volume <b id="volL">$120,000</b></label><input type="range" id="vol" min="0" max="1000" value="560" aria-label="Daily trading volume"></div>
+        <div class="ctl"><label>Share of the key to sell <b id="shL">25%</b></label>
+          <div class="seg" id="seg"><button type="button" data-s="10">10%</button><button type="button" data-s="25" class="on">25%</button><button type="button" data-s="50">50%</button><button type="button" data-s="100">100%</button></div></div>
+        <div class="ctl"><label>Ask, in months of fees <b id="mulL">12 months</b></label><input type="range" id="mul" min="3" max="36" value="12" aria-label="Ask in months of fees"></div>
+        <div class="outs">
+          <div><span>Pool fees / day</span><b id="oDay">$1,200</b></div>
+          <div><span>Key earns / month</span><b id="oMon">$28,800</b></div>
+          <div><span>Burned / month</span><b id="oBurn">$7,200</b></div>
+        </div>
+        <p class="note">Flat-volume arithmetic, nothing more. Volume on a new coin moves a lot in both directions, and a buyer will price that in.</p>
+      </div>
+      <div class="keycard" id="keycard">
+        <div class="kt">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="16" cy="24" r="10" fill="none" stroke="#f2b632" stroke-width="5"/><path d="M26 24h18M38 24v8M32 24v6" stroke="#f2b632" stroke-width="5" stroke-linecap="round" fill="none"/></svg>
+          <div><b>Key listing</b><small id="kNo">KEY #0412 · $PAWS</small></div>
+        </div>
+        <div class="ask"><small>Ask for <span id="kSh">25%</span> of the key</small><span id="kAsk">$86,400</span></div>
+        <ul>
+          <li>Buyer receives per month<b id="kMon">$7,200</b></li>
+          <li>You keep per month<b id="kKeep">$21,600</b></li>
+          <li>Buyer is paid back in<b id="kBack">12 months at this volume</b></li>
+          <li>Liquidity after the sale<b>still locked, untouched</b></li>
+        </ul>
+        <div class="bk-act"><button class="btn acc" id="listBtn" type="button">List this key</button><small class="note" style="margin:0" id="listNote">Preview. Listings open with the launchpad.</small></div>
+        <div class="stamp" id="stamp">LISTED</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 MARKET -->
+<section id="market">
+  <div class="wrap">
+    <div class="sh"><div class="num">04</div><div><h2>Key market <span class="sample">SAMPLE BOARD</span></h2><p>Keys and key shares listed by their holders, sorted by what the lock earned over the last 30 days. Click a row to open the lock behind it.</p></div></div>
+    <div class="mk">
+      <div class="card" style="padding:10px 12px 4px"><table class="tbl"><thead><tr><th>Coin</th><th>30d fees</th><th>Share</th><th>Ask</th><th>Months</th><th></th></tr></thead><tbody id="mkB"></tbody></table></div>
+      <div class="card"><div class="k">Claims and sales</div><div class="feed" id="feed"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 TOKEN -->
+<section id="token">
+  <div class="wrap">
+    <div class="sh"><div class="num">05</div><div><h2>$LOCKPAD</h2><p>One fifth of every fee claimed on every lock buys $LOCKPAD on the open market and burns it. The token has no other job, and the launchpad has no other way to pay itself.</p></div></div>
+    <div class="grid2">
+      <div class="card burn"><div><div class="k">Burned so far <span class="sample">SAMPLE</span></div><div class="big" id="burnV">0</div><p>Each claim anywhere on the launchpad sends its 20% through a market buy and into the burn address in the same transaction. The counter on this page previews how that ticker will read once locks are live.</p></div></div>
+      <div class="card"><table class="ptbl">
+        <tr><td>Network</td><td>Robinhood Chain · 4663</td></tr>
+        <tr><td>Pool fee on every launch</td><td>1%</td></tr>
+        <tr><td>To the key holder</td><td>80%</td></tr>
+        <tr><td>Buy &amp; burn $LOCKPAD</td><td>20%</td></tr>
+        <tr><td>Liquidity</td><td>locked forever · no withdraw function</td></tr>
+        <tr><td>Locker admin</td><td>none · not upgradeable</td></tr>
+        <tr><td>Key</td><td>transferable · splits into 100 shares</td></tr>
+      </table></div>
+    </div>
+    <div class="grid2" style="margin-top:16px">
+      <div class="card"><div class="k">Your wallet</div><h3>Keys and claims land where you say</h3><p>Connect a wallet on Robinhood Chain to see your $LOCKPAD balance once it is live. Connecting shares your address and nothing else. LockPad never asks for a signature to read a balance, and nothing on this page sends a transaction.</p>
+        <div class="bk-act" style="margin-top:16px"><button class="btn acc" id="wBtn2" type="button">Connect wallet</button><small id="tokBal" style="color:var(--mute);font-size:12px">Connect a wallet on Robinhood Chain to see your $LOCKPAD.</small></div></div>
+      <div class="card"><div class="k">Wallets that work here</div><p>Robinhood Wallet supports Robinhood Chain out of the box. MetaMask, Rabby, Trust Wallet and OKX Wallet get the network added for you when you connect: chain ID 4663, ETH for gas, official RPC and explorer. Phone wallets connect by QR through WalletConnect.</p></div>
+    </div>
+    <div class="grid4" style="margin-top:16px">
+      <div class="card"><div class="k">Permanent bid</div><p>As long as any coin on the launchpad trades, someone is buying $LOCKPAD with a fifth of its fees. The bid is a side effect of claims, so it cannot be paused.</p></div>
+      <div class="card"><div class="k">No treasury</div><p>LockPad keeps nothing for itself. Fees belong to key holders, and the protocol's cut is burned rather than collected. There is no wallet to watch.</p></div>
+      <div class="card"><div class="k">No emissions</div><p>Fixed supply, no staking rewards, no unlock schedule. The only thing that ever happens to the supply is that it gets smaller.</p></div>
+      <div class="card"><div class="k">Keys are not $LOCKPAD</div><p>A key pays the fees of one coin's lock. $LOCKPAD is burned by the fees of all of them. Holding one gives no claim on the other.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 ROLLOUT -->
+<section id="rollout">
+  <div class="wrap">
+    <div class="sh"><div class="num">06</div><div><h2>Rollout</h2><p>What exists today, what ships with the token and what comes after it.</p></div></div>
+    <div class="roll">
+      <div class="card now"><div class="k">Now</div><h3>This page</h3><p>The lock record format, the key pricing desk and wallet connection for Robinhood Chain. The records shown are examples.</p></div>
+      <div class="card"><div class="k">At launch</div><h3>$LOCKPAD goes live</h3><p>Contract address, buy link and X account are published here. The locker contract is published for review before the first coin can use it.</p></div>
+      <div class="card"><div class="k">After</div><h3>Launches, then the key market</h3><p>Launching and claiming open first. Key transfers work from day one; listings and shares follow once there are locks with a fee history worth pricing.</p></div>
+    </div>
+    <div class="final">
+      <div><h2>The liquidity never leaves. The key is yours to keep or sell.</h2><p>Launch a coin people can always trade, and own what it earns.</p></div>
+      <div class="cta"><a class="btn dark" id="buyBtn2" href="#">Buy $LOCKPAD</a><a class="btn xLink" href="#">Follow on X</a></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>LockPad · $LOCKPAD · Robinhood Chain (4663).<br>Independent from Robinhood Markets, Inc. Coins, locks, keys, prices and fees shown on this page are illustrative examples. Fees depend on trading volume and can be zero. Nothing here is an offer or financial advice.</div>
+    <div class="mono">lockpad.vercel.app</div>
+  </div>
+</footer>
+</main>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal">
+    <div class="modal-h"><h3 id="mTitle">Connect wallet</h3><button class="x" id="mClose" aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button></div>
+    <div class="modal-b" id="mBody"></div>
+  </div>
+</div>
+<div id="rain"></div>
+<div id="toast"></div>
+
+<script>
+/* ============ SETTINGS ============ */
+window.CONTRACT = "";      /* адрес контракта */
+window.TWITTER  = "";      /* ссылка на X */
+window.BUY_URL  = "";      /* ссылка на покупку — пусто, пока Олег не даст */
+window.WC_PROJECT_ID = ""; /* WalletConnect / Reown project id (cloud.reown.com) — включает QR для Robinhood Wallet и телефонов */
+/* ================================== */
+var CA=(window.CONTRACT||"").trim(), TW=(window.TWITTER||"").trim(), BUY=(window.BUY_URL||"").trim();
+window.toast=function(m){var t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove("on");},2400);};
+if(CA){
+  document.querySelectorAll(".ca-val").forEach(function(e){e.textContent=CA.slice(0,6)+"…"+CA.slice(-4);});
+  document.getElementById("caBox").addEventListener("click",function(){var b=this.querySelector("b"),old=b.textContent;navigator.clipboard.writeText(CA).then(function(){b.textContent="copied";setTimeout(function(){b.textContent=old;},1200);});});
+}else{
+  document.getElementById("caBox").addEventListener("click",function(){toast("Contract address is published at launch.");});
+}
+if(TW){document.querySelectorAll("#xBtn,.xLink").forEach(function(a){a.href=TW;a.target="_blank";a.rel="noopener";});}
+else{document.querySelectorAll("#xBtn,.xLink").forEach(function(a){a.addEventListener("click",function(e){e.preventDefault();toast("X account goes live with the launch.");});});}
+["buyBtn","buyBtn2"].forEach(function(id){
+  var b=document.getElementById(id); if(!b) return;
+  if(BUY){b.href=BUY;b.target="_blank";b.rel="noopener";}
+  else{b.addEventListener("click",function(e){e.preventDefault();toast("Buy link goes live with the launch. Check back in a moment.");});}
+});
+</script>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+
+/* ---------- audio ---------- */
+var AC=null, sfxOn=ls("lp_snd")!=="0";
+function ac(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return null;} } if(AC.state==="suspended") AC.resume(); return AC; }
+function tone(f1,f2,dur,type,g,delay){
+  if(!sfxOn) return; var c=ac(); if(!c) return;
+  var o=c.createOscillator(), gg=c.createGain(), t=c.currentTime+(delay||0);
+  o.type=type||"sine"; o.frequency.setValueAtTime(f1,t);
+  if(f2&&f2!==f1) o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  gg.gain.setValueAtTime(.0001,t); gg.gain.exponentialRampToValueAtTime(g||.06,t+.012);
+  gg.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(gg); gg.connect(c.destination); o.start(t); o.stop(t+dur+.05);
+}
+window.tone=tone;
+var S={
+  fee:function(){ tone(1320,1320,.07,"sine",.025); },
+  coin:function(i){ tone(1568+i*90,2093+i*90,.12,"triangle",.05,i*.045); },
+  claim:function(){ tone(523,523,.12,"triangle",.06); tone(659,659,.12,"triangle",.06,.09); tone(784,1046,.22,"triangle",.07,.18); },
+  clunk:function(){ tone(140,60,.16,"square",.07); tone(90,50,.2,"sawtooth",.05,.05); },
+  rattle:function(){ for(var i=0;i<4;i++) tone(320-i*30,180,.05,"square",.04,i*.07); },
+  stamp:function(){ tone(110,45,.2,"square",.09); tone(2200,900,.05,"sine",.03,.02); },
+  tick:function(){ tone(880,880,.03,"sine",.02); },
+  open:function(){ tone(392,523,.14,"triangle",.05); tone(659,784,.16,"triangle",.05,.1); },
+  win:function(){ [523,659,784,1046,1318].forEach(function(f,i){ tone(f,f,.16,"triangle",.06,i*.09); }); }
+};
+var sb=$("sndBtn");
+function paintSnd(){ sb.textContent="SOUND · "+(sfxOn?"ON":"OFF"); sb.setAttribute("aria-pressed",sfxOn?"true":"false"); }
+sb.addEventListener("click",function(){ sfxOn=!sfxOn; ls("lp_snd",sfxOn?"1":"0"); paintSnd(); if(sfxOn) S.open(); });
+paintSnd();
+
+/* ---------- helpers ---------- */
+function money(n,dp){ return "$"+n.toLocaleString("en-US",{minimumFractionDigits:dp||0,maximumFractionDigits:dp||0}); }
+function num(n,dp){ return n.toLocaleString("en-US",{minimumFractionDigits:dp||0,maximumFractionDigits:dp||0}); }
+function hsh(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ var r=seed>>>0; return function(){ r=(Math.imul(r,1664525)+1013904223)>>>0; return r/4294967296; }; }
+function hex(r,n){ var s=""; for(var i=0;i<n;i++) s+="0123456789abcdef"[Math.floor(r()*16)]; return s; }
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+
+/* ---------- marquee ---------- */
+var MQ=["Liquidity locked <b>forever</b>","withdraw() <b>does not exist</b>","80% of fees to the <b>key holder</b>","20% buys and burns <b>$LOCKPAD</b>","one key per coin · <b>100 shares</b>","anyone can claim · <b>only the key gets paid</b>","no admin · <b>no upgrades</b>","Robinhood Chain · <b>4663</b>","keep the key or <b>sell it</b>"];
+var mh=""; for(var m=0;m<2;m++) MQ.forEach(function(t){ mh+="<span>"+t+"</span><span>◆</span>"; });
+$("mq").innerHTML=mh;
+
+/* ---------- coins ---------- */
+function dropCoin(host,x,y,big){
+  var d=document.createElement("div"); d.className="coin"; d.textContent="$";
+  d.style.left=(x-12)+"px"; d.style.top=(y-12)+"px"; host.appendChild(d);
+  var vx=(Math.random()-.5)*(big?9:8), vy=big?2+Math.random()*3:-5-Math.random()*6, n=0, rot=(Math.random()-.5)*24, px=0, py=0, lim=big?innerHeight+60:420;
+  (function stp(){
+    n++; vy+=.42; px+=vx; py+=vy;
+    d.style.transform="translate("+px+"px,"+py+"px) rotate("+(n*rot)+"deg)";
+    if(n>170||py>lim){ d.remove(); return; }
+    if(!big&&n>60) d.style.opacity=String(Math.max(0,1-(n-60)/30));
+    requestAnimationFrame(stp);
+  })();
+}
+function rain(k){ var host=$("rain"); for(var i=0;i<k;i++) (function(i){ setTimeout(function(){ dropCoin(host,Math.random()*innerWidth,-20,true); },i*28); })(i); }
+
+/* ---------- hero lock ---------- */
+var un=1284.37, life=48210, claimed=46926, tries=0, claims=0;
+var COINS=["$PAWS"], SIDES=["Buy","Sell","Buy","Buy"];
+var logEl=$("log");
+function addLog(txt,val,cls){
+  var d=document.createElement("div"); if(cls) d.className=cls;
+  d.innerHTML="<span>"+txt+"</span><b>"+val+"</b>"; logEl.insertBefore(d,logEl.firstChild);
+  while(logEl.children.length>5) logEl.removeChild(logEl.lastChild);
+}
+function paintLock(){ $("unV").textContent=num(un,2); $("lifeV").textContent=money(life); $("clV").textContent=money(claimed); }
+function feeTick(){
+  var size=Math.exp(Math.log(40)+Math.random()*(Math.log(9000)-Math.log(40)));
+  var fee=size*.01; un+=fee; life+=fee;
+  addLog(SIDES[Math.floor(Math.random()*4)]+" $PAWS · "+money(size)+" · 1% fee","+"+money(fee,2));
+  paintLock(); if(!document.hidden) S.fee();
+  setTimeout(feeTick,1600+Math.random()*3800);
+}
+function doClaim(){
+  if(un<1){ toast("Nothing to claim yet. Fees arrive with the next trade."); S.tick(); return; }
+  var amt=un, key=amt*.8, burn=amt*.2; un=0; claimed+=amt; claims++;
+  var lb=$("lockbox"); lb.classList.remove("pay"); void lb.offsetWidth; lb.classList.add("pay");
+  var k=Math.min(26,8+Math.floor(amt/120)); for(var i=0;i<k;i++){ dropCoin($("drop"),75,70); if(i<6) S.coin(i); }
+  S.claim();
+  addLog("claim() · key holder "+money(key,2)+" · burn "+money(burn,2),"paid","cl");
+  paintLock(); bumpBurn(burn*9.4);
+  toast(money(key,2)+" to the key holder, "+money(burn,2)+" bought and burned $LOCKPAD.");
+  if(claims%4===0) rain(60);
+}
+var FN=["withdraw()","decreaseLiquidity()","burn(positionId)","transferFrom(locker, you)","setOwner(you)","rescueTokens()","upgradeTo(newLocker)","emergencyExit()"];
+var WHY=["function does not exist","function does not exist","function does not exist","locker cannot approve or send","there is no owner","function does not exist","contract is not a proxy","function does not exist"];
+function doWithdraw(){
+  var i=tries%FN.length; tries++;
+  var lb=$("lockbox"); lb.classList.remove("shake"); void lb.offsetWidth; lb.classList.add("shake");
+  S.rattle(); S.clunk();
+  addLog(FN[i]+" → reverted","✕","rv");
+  toast(FN[i]+" reverted: "+WHY[i]+".");
+  if(tries===5){ $("badge5").classList.add("on"); S.win(); rain(70); setTimeout(function(){ toast("You tried five ways out. There are none. That is the product."); },900); }
+}
+$("claimBtn").addEventListener("click",doClaim);
+$("wdBtn").addEventListener("click",doWithdraw);
+$("lockbox").addEventListener("click",doClaim);
+$("lockbox").addEventListener("keydown",function(e){ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); doClaim(); } });
+addLog("Buy $PAWS · $2,140 · 1% fee","+$21.40"); addLog("Sell $PAWS · $610 · 1% fee","+$6.10"); addLog("Buy $PAWS · $4,800 · 1% fee","+$48.00");
+paintLock(); setTimeout(feeTick,1800);
+
+/* ---------- burn counter ---------- */
+var burnT=18403221;
+function bumpBurn(n){ burnT+=n; $("burnV").textContent=num(Math.floor(burnT))+" $LOCKPAD"; }
+bumpBurn(0); setInterval(function(){ if(!document.hidden) bumpBurn(40+Math.random()*900); },2600);
+
+/* ---------- lookup ---------- */
+var PAL=["#f2b632","#8fa0b3","#54d98c","#ff8a7e","#7db8ff","#e6d7a8","#c9a0ff"];
+var MK=[["$TOAST",61200,25,14],["$HOODIE",48800,100,9],["$GRANNY",33950,10,18],["$MOSS",21400,50,11],["$BRICK",17760,25,8],["$LATTE",12300,100,6],["$SOCKS",9120,10,16],["$PIGEON",6480,50,7],["$KETTLE",3910,25,5]];
+var OV={"$PAWS":{f30:21900,life:48210,key:412,pos:2187,un:1284.37}}; MK.forEach(function(k){ OV[k[0]]={f30:k[1]}; });
+var QUICK=["$PAWS","$TOAST","$HOODIE","$GRANNY","$MOSS","$NOPE"];
+function lockOf(q){
+  var t=q.trim(); if(!t) return null;
+  var isAddr=/^0x[0-9a-fA-F]{6,}$/.test(t);
+  var tick=isAddr?null:"$"+t.replace(/^\$/,"").replace(/[^A-Za-z0-9]/g,"").toUpperCase().slice(0,10);
+  if(!isAddr&&tick.length<2) return null;
+  var r=rng(hsh((tick||t).toLowerCase()));
+  if(isAddr) tick="$"+["PAWS","TOAST","MOSS","HOODIE","GRANNY","BRICK","LATTE"][Math.floor(r()*7)];
+  var none=tick==="$NOPE"||r()<.12;
+  var vol=Math.exp(Math.log(3000)+r()*(Math.log(2400000)-Math.log(3000)));
+  var days=6+Math.floor(r()*140), a=.6+r()*.7, bb=.5+r()*.9, o=OV[tick];
+  if(o){ none=false; vol=o.f30/(.01*30*a); days=Math.max(days,34); }
+  var f30=vol*.01*Math.min(30,days)*a, lifeF=f30+vol*.01*Math.max(0,days-30)*bb;
+  if(o&&o.life) lifeF=o.life;
+  var holderKind=r(), holder, note;
+  if(holderKind<.55){ holder="0x"+hex(r,4)+"…"+hex(r,4); note="creator · never sold"; }
+  else if(holderKind<.8){ holder="0x"+hex(r,4)+"…"+hex(r,4); note="bought whole · "+(1+Math.floor(r()*(days-1)))+" days ago"; }
+  else { var n=3+Math.floor(r()*18); holder=n+" addresses"; note="split into 100 shares"; }
+  if(tick==="$PAWS"){ holder="0x7a41…c21e"; note="creator · never sold"; }
+  return {tick:tick,none:none,col:PAL[Math.floor(r()*PAL.length)],pos:o&&o.pos||1000+Math.floor(r()*8000),key:o&&o.key||100+Math.floor(r()*9000),days:days,
+    f30:f30,life:lifeF,un:o&&o.un||f30*(.02+r()*.2),holder:holder,note:note,vol:vol,addr:"0x"+hex(r,4)+"…"+hex(r,4)};
+}
+function renderRec(L,quiet){
+  var el=$("rec");
+  if(!L){ el.innerHTML="<div class=\"rec-h\"><div class=\"tk\" style=\"background:#2a323c;color:#9aa3ae\">?</div><div><b>Type a ticker</b><small>two characters or more, or a 0x address</small></div></div>"; return; }
+  if(L.none){
+    el.innerHTML="<div class=\"rec-h\"><div class=\"tk\" style=\"background:#2a323c;color:#9aa3ae\">"+esc(L.tick.charAt(1))+"</div><div><b>"+esc(L.tick)+"</b><small>no lock under this ticker</small></div><span class=\"tag no\">NOT LAUNCHED</span></div>"+
+      "<div class=\"rec-f\"><a class=\"btn small acc\" href=\"#desk\">Price a key for "+esc(L.tick)+"</a><small>The ticker is free. The first launch takes it, along with key #"+L.key+".</small></div>";
+    if(!quiet) S.tick(); return;
+  }
+  el.innerHTML="<div class=\"rec-h\"><div class=\"tk\" style=\"background:"+L.col+"\">"+esc(L.tick.charAt(1))+"</div><div><b>"+esc(L.tick)+"</b><small>lock "+L.addr+" · "+L.days+" days old</small></div><span class=\"tag\">LOCKED FOREVER</span></div>"+
+    "<div class=\"kv\">"+
+      "<div><span>LP position</span><b>#"+num(L.pos)+"</b></div>"+
+      "<div><span>Key</span><b>#"+String(L.key).padStart(4,"0")+"</b></div>"+
+      "<div><span>Key holder</span><b>"+L.holder+"</b></div>"+
+      "<div><span>History</span><b>"+L.note+"</b></div>"+
+      "<div><span>Fees, last 30 days</span><b>"+money(L.f30)+"</b></div>"+
+      "<div><span>Fees, lifetime</span><b>"+money(L.life)+"</b></div>"+
+      "<div><span>Unclaimed right now</span><b style=\"color:var(--acc)\">"+money(L.un,2)+"</b></div>"+
+      "<div><span>Key earns at this pace</span><b>"+money(L.f30*.8)+" / month</b></div>"+
+    "</div>"+
+    "<div class=\"fn\">"+
+      "<div class=\"y\"><span>claim()</span><b>open to anyone</b></div><div class=\"n\"><span>withdraw()</span><b>not in contract</b></div>"+
+      "<div class=\"y\"><span>position()</span><b>read only</b></div><div class=\"n\"><span>decreaseLiquidity()</span><b>not in contract</b></div>"+
+      "<div class=\"y\"><span>keyHolder()</span><b>read only</b></div><div class=\"n\"><span>transfer / burn</span><b>not in contract</b></div>"+
+      "<div class=\"y\"><span>pending()</span><b>read only</b></div><div class=\"n\"><span>owner / upgrade</span><b>none</b></div>"+
+    "</div>"+
+    "<div class=\"rec-f\"><button class=\"btn small\" id=\"toDesk\" type=\"button\">Price this key</button><small>sample record · format preview</small></div>";
+  $("toDesk").addEventListener("click",function(){ setDesk(L); location.hash="#desk"; });
+  if(!quiet) S.open();
+}
+function lookup(q,quiet){ var L=lockOf(q); renderRec(L,quiet); if(L&&!quiet&&!L.none) window.__lastLock=L; }
+$("qBtn").addEventListener("click",function(){ lookup($("q").value); });
+$("q").addEventListener("keydown",function(e){ if(e.key==="Enter") lookup($("q").value); });
+QUICK.forEach(function(t){ var b=document.createElement("button"); b.type="button"; b.textContent=t; b.addEventListener("click",function(){ $("q").value=t; lookup(t); }); $("quick").appendChild(b); });
+$("q").value="$PAWS"; lookup("$PAWS",true);
+
+/* ---------- desk ---------- */
+var share=25, deskTick="$PAWS", deskKey="0412";
+function volOf(v){ return Math.exp(Math.log(1000)+v/1000*(Math.log(5000000)-Math.log(1000))); }
+function vFrom(vol){ return Math.round((Math.log(vol)-Math.log(1000))/(Math.log(5000000)-Math.log(1000))*1000); }
+function roundNice(n){ var p=Math.pow(10,Math.max(0,Math.floor(Math.log10(n))-1)); return Math.round(n/p)*p; }
+function paintDesk(){
+  var vol=roundNice(volOf(+$("vol").value)), mul=+$("mul").value;
+  var day=vol*.01, mon=day*30*.8, burn=day*30*.2, part=mon*share/100, ask=part*mul;
+  $("volL").textContent=money(vol); $("shL").textContent=share+"%"; $("mulL").textContent=mul+" months";
+  $("oDay").textContent=money(day); $("oMon").textContent=money(mon); $("oBurn").textContent=money(burn);
+  $("kSh").textContent=share+"%"; $("kAsk").textContent=money(ask); $("kMon").textContent=money(part);
+  $("kKeep").textContent=share===100?"$0 · key fully sold":money(mon-part);
+  $("kBack").textContent=mul+" months at this volume";
+  $("kNo").textContent="KEY #"+deskKey+" · "+deskTick;
+  $("stamp").classList.remove("on"); $("listBtn").textContent="List this key";
+}
+function setDesk(L){ deskTick=L.tick; deskKey=String(L.key).padStart(4,"0"); $("vol").value=Math.max(0,Math.min(1000,vFrom(L.vol))); paintDesk(); }
+["vol","mul"].forEach(function(id){ $(id).addEventListener("input",function(){ paintDesk(); S.tick(); }); });
+$("seg").querySelectorAll("button").forEach(function(b){ b.addEventListener("click",function(){ $("seg").querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); }); b.classList.add("on"); share=+b.dataset.s; paintDesk(); S.tick(); }); });
+$("listBtn").addEventListener("click",function(){
+  var st=$("stamp"); st.classList.remove("on"); void st.offsetWidth; st.classList.add("on"); S.stamp();
+  this.textContent="Listed ✓ · preview";
+  var r=$("keycard").getBoundingClientRect(), host=$("rain");
+  for(var i=0;i<14;i++) dropCoin(host,r.left+r.width*.75,r.top+r.height*.7);
+  toast("Preview listing stamped. Real listings open with the launchpad.");
+});
+paintDesk();
+
+/* ---------- market ---------- */
+
+var mb="";
+MK.forEach(function(k,i){ var ask=k[1]*.8*k[2]/100*k[3], sold=i===3||i===6;
+  mb+="<tr data-t=\""+k[0]+"\"><td>"+k[0]+"</td><td>"+money(k[1])+"</td><td>"+k[2]+"%</td><td>"+money(roundNice(ask))+"</td><td>"+k[3]+" mo</td><td><span class=\"s"+(sold?" sold":"")+"\">"+(sold?"SOLD":"FOR SALE")+"</span></td></tr>"; });
+$("mkB").innerHTML=mb;
+$("mkB").querySelectorAll("tr").forEach(function(tr){ tr.addEventListener("click",function(){ $("q").value=tr.dataset.t; lookup(tr.dataset.t); location.hash="#lookup"; }); });
+var feed=$("feed"), FT=["$TOAST","$HOODIE","$GRANNY","$MOSS","$BRICK","$LATTE","$SOCKS","$PIGEON","$PAWS"];
+function addFeed(init){
+  var d=document.createElement("div"), t=FT[Math.floor(Math.random()*FT.length)], now=new Date();
+  var hh=("0"+now.getHours()).slice(-2)+":"+("0"+now.getMinutes()).slice(-2);
+  if(Math.random()<.22){ d.className="sale"; var sh=[10,25,50][Math.floor(Math.random()*3)]; d.innerHTML="<span>"+hh+"</span><span>"+sh+"% of key "+t+" sold</span><b>"+money(roundNice(2000+Math.random()*90000))+"</b>"; }
+  else d.innerHTML="<span>"+hh+"</span><span>claim · "+t+" lock</span><b>+"+money(20+Math.random()*2600,2)+"</b>";
+  feed.insertBefore(d,feed.firstChild); while(feed.children.length>11) feed.removeChild(feed.lastChild);
+  if(!init) setTimeout(addFeed,2200+Math.random()*4200);
+}
+for(var f=0;f<9;f++) addFeed(true); setTimeout(addFeed,2500);
+})();
+</script>
+
+<script>
+/* =================================================================
+   WALLET — EIP-6963 discovery + EIP-1193, Robinhood Chain (4663)
+   ================================================================= */
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var CHAIN={
+  chainId:'0x133f',
+  chainName:'Robinhood Chain',
+  nativeCurrency:{name:'Ether',symbol:'ETH',decimals:18},
+  rpcUrls:['https://rpc.mainnet.chain.robinhood.com'],
+  blockExplorerUrls:['https://robinhoodchain.blockscout.com']
+};
+var TOKCA=(window.CONTRACT||'').trim();
+var WC_ID=(window.WC_PROJECT_ID||'').trim();
+var MOBILE=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+var W={providers:{},prov:null,info:null,addr:null,chain:null,eth:null,bal:null,dec:18};
+function store(k,v){
+  try{
+    if(v===undefined) return localStorage.getItem(k);
+    if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v);
+  }catch(e){ return null; }
+}
+function beep(a,b,d,t,g){ if(window.tone) window.tone(a,b,d,t,g); }
+function say(m){ if(window.toast) window.toast(m); }
+
+window.addEventListener('eip6963:announceProvider',function(e){
+  var d=e.detail; if(!d||!d.info||!d.provider) return;
+  W.providers[d.info.uuid]=d;
+  if($('ov').classList.contains('show') && !W.addr) renderPicker();
+});
+window.dispatchEvent(new Event('eip6963:requestProvider'));
+
+function short(a){ return a?a.slice(0,6)+'…'+a.slice(-4):''; }
+function isOk(){ return !!W.chain && W.chain.toLowerCase()===CHAIN.chainId; }
+function fmtUnits(hex,dec,dp){
+  try{
+    var v=BigInt(hex||'0x0'), base=BigInt(10)**BigInt(dec);
+    var whole=v/base, frac=v%base;
+    var f=frac.toString().padStart(dec,'0').slice(0,dp).replace(/0+$/,'');
+    return whole.toLocaleString('en-US')+(f?'.'+f:'');
+  }catch(e){ return '—'; }
+}
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function pageUrl(){ return location.origin+location.pathname; }
+function listOptions(){
+  var list=Object.keys(W.providers).map(function(k){ return W.providers[k]; });
+  if(!list.length && window.ethereum){
+    var e=window.ethereum;
+    var nm=e.isRabby?'Rabby':e.isTrust||e.isTrustWallet?'Trust Wallet':e.isOkxWallet||e.isOKExWallet?'OKX Wallet':e.isRobinhood||e.isRobinhoodWallet?'Robinhood Wallet':e.isMetaMask?'MetaMask':'Browser wallet';
+    list.push({info:{uuid:'legacy',name:nm,icon:'',rdns:'legacy'},provider:e});
+  }
+  return list;
+}
+
+/* wallets that work on Robinhood Chain */
+var KNOWN=[
+  {k:'robinhood',n:'Robinhood Wallet',c:'#1c1d22',t:'R',m:/robinhood/i,
+   help:function(){ return '<p>Robinhood Wallet supports Robinhood Chain out of the box.</p><ol><li>Open Robinhood Wallet on your phone</li><li>Tap <b>Web3</b> (the globe icon)</li><li>Paste <code>'+esc(pageUrl())+'</code> and tap Connect wallet there</li></ol>'; },
+   acts:function(){ return (WC_ID?'<button class="btn small acc" data-act="wc">Scan QR with WalletConnect</button>':'')+'<button class="btn small" data-act="copy">Copy site link</button><a class="btn small" target="_blank" rel="noopener" href="https://robinhood.com/us/en/download/wallet/">Get the app ↗</a>'; }},
+  {k:'metamask',n:'MetaMask',c:'#F6851B',t:'M',m:/metamask/i,
+   help:function(){ return MOBILE?'<p>Opens this page inside the MetaMask app. LockPad then adds Robinhood Chain for you.</p>':'<p>Install the MetaMask extension and reload this page. LockPad adds Robinhood Chain (4663) to it when you connect.</p>'; },
+   acts:function(){ return MOBILE?'<a class="btn small acc" href="https://metamask.app.link/dapp/'+esc(location.host+location.pathname)+'">Open in MetaMask</a>':'<a class="btn small acc" target="_blank" rel="noopener" href="https://metamask.io/download/">Install MetaMask ↗</a>'+(WC_ID?'<button class="btn small" data-act="wc">Use the phone app (QR)</button>':''); }},
+  {k:'rabby',n:'Rabby',c:'#7084FF',t:'R',m:/rabby/i,
+   help:function(){ return '<p>Install the Rabby extension and reload this page. Robinhood Chain is added as a custom network when you connect.</p>'; },
+   acts:function(){ return '<a class="btn small acc" target="_blank" rel="noopener" href="https://rabby.io/">Get Rabby ↗</a>'+(WC_ID?'<button class="btn small" data-act="wc">Rabby mobile (QR)</button>':''); }},
+  {k:'trust',n:'Trust Wallet',c:'#0500FF',t:'T',m:/trust/i,
+   help:function(){ return MOBILE?'<p>Opens this page in the Trust Wallet browser. Approve adding Robinhood Chain when asked.</p>':'<p>Install the Trust Wallet extension and reload, or connect the mobile app by QR.</p>'; },
+   acts:function(){ return MOBILE?'<a class="btn small acc" href="https://link.trustwallet.com/open_url?coin_id=60&url='+encodeURIComponent(pageUrl())+'">Open in Trust Wallet</a>':'<a class="btn small acc" target="_blank" rel="noopener" href="https://trustwallet.com/download">Get Trust Wallet ↗</a>'+(WC_ID?'<button class="btn small" data-act="wc">Mobile app (QR)</button>':''); }},
+  {k:'okx',n:'OKX Wallet',c:'#2a2b30',t:'O',m:/okx|okex/i,
+   help:function(){ return '<p>Install OKX Wallet and reload this page, or open it from the app\u2019s Discover browser.</p>'; },
+   acts:function(){ return '<a class="btn small acc" target="_blank" rel="noopener" href="https://web3.okx.com/download">Get OKX Wallet ↗</a>'+(WC_ID?'<button class="btn small" data-act="wc">Mobile app (QR)</button>':'')+'<button class="btn small" data-act="copy">Copy site link</button>'; }}
+];
+
+var ov=$('ov'), mBody=$('mBody');
+function openModal(){ ov.classList.add('show'); if(W.addr) renderAccount(); else renderPicker(); window.dispatchEvent(new Event('eip6963:requestProvider')); beep(520,780,.08,'sine',.03); }
+function closeModal(){ ov.classList.remove('show'); }
+$('mClose').addEventListener('click',closeModal);
+ov.addEventListener('click',function(e){ if(e.target===ov) closeModal(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeModal(); });
+['wBtn','wBtn2'].forEach(function(id){ $(id).addEventListener('click',function(){ openModal(); }); });
+
+var CHAIN_IC='<svg width="18" height="18" viewBox="0 0 30 30" fill="none"><path d="M8 8v7.5a7 7 0 0 0 14 0V8" stroke="#f2f1f6" stroke-width="2.4" stroke-linecap="round"/><path d="M6 19.5h9.5L24 11" stroke="#ff6b57" stroke-width="2" stroke-linecap="round"/></svg>';
+function netCard(){ return '<div class="netcard"><span class="ic">'+CHAIN_IC+'</span><div><b>Robinhood Chain</b><span>chain ID 4663 · ETH for gas</span></div></div>'; }
+var WALLET_IC='<span class="gic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#8b8f98" stroke-width="1.5"><rect x="2" y="4" width="12" height="9" rx="2"/><path d="M10.5 8.5h1.5"/></svg></span>';
+var WC_IC='<span class="lg" style="background:#3B99FC"><svg width="18" height="12" viewBox="0 0 30 18" fill="#fff"><path d="M6.1 3.5c4.9-4.7 12.9-4.7 17.8 0l.6.6c.2.2.2.6 0 .9l-2 2c-.1.1-.3.1-.4 0l-.8-.8c-3.4-3.3-9-3.3-12.4 0l-.9.8c-.1.1-.3.1-.4 0l-2-2c-.2-.2-.2-.6 0-.9l.5-.6zm22 4.1 1.8 1.7c.2.2.2.6 0 .9l-8 7.8c-.2.2-.6.2-.9 0l-5.7-5.5c-.1-.1-.2-.1-.2 0l-5.7 5.5c-.2.2-.6.2-.9 0L.2 10.2c-.2-.2-.2-.6 0-.9L2 7.6c.2-.2.6-.2.9 0l5.7 5.5c.1.1.2.1.2 0l5.7-5.5c.2-.2.6-.2.9 0l5.7 5.5c.1.1.2.1.2 0l5.7-5.5c.3-.2.7-.2.9 0z"/></svg></span>';
+
+function renderPicker(err){
+  $('mTitle').textContent='Connect wallet';
+  var list=listOptions(), h=netCard(), taken={};
+  if(list.length){
+    h+='<div class="msec"><span>In this browser</span><span>'+list.length+' found</span></div><div class="wlist">'+list.map(function(p){
+      KNOWN.forEach(function(k){ if(k.m.test(p.info.name+' '+(p.info.rdns||''))) taken[k.k]=1; });
+      var ic=p.info.icon&&/^data:image\//.test(p.info.icon)?'<img alt="" src="'+esc(p.info.icon)+'">':WALLET_IC;
+      return '<button class="wopt" data-u="'+esc(p.info.uuid)+'">'+ic+'<b>'+esc(p.info.name)+'</b><span class="badge">DETECTED</span></button>';
+    }).join('')+'</div>';
+  }
+  if(WC_ID){
+    h+='<div class="msec"><span>Phone wallet</span></div><button class="wc" data-act="wc">'+WC_IC+'<b>WalletConnect</b><small>QR code</small></button>';
+  }
+  var rest=KNOWN.filter(function(k){ return !taken[k.k]; });
+  if(rest.length){
+    h+='<div class="msec"><span>'+(list.length?'Other wallets':'Wallets for Robinhood Chain')+'</span></div><div class="wlist">'+rest.map(function(k){
+      return '<button class="wopt" data-k="'+k.k+'"><span class="lg" style="background:'+k.c+'">'+k.t+'</span><b>'+k.n+'</b><svg class="chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4.5 2.5 8 6l-3.5 3.5"/></svg></button><div class="whelp" data-h="'+k.k+'">'+k.help()+'<div class="acts">'+k.acts()+'</div></div>';
+    }).join('')+'</div>';
+  }
+  h+='<div class="merr'+(err?' show':'')+'" id="mErr">'+(err?esc(err):'')+'</div>';
+  h+='<p class="mfoot">If Robinhood Chain is not in your wallet yet, LockPad asks it to add the network with the official RPC and explorer. Connecting only shares your address, and nothing here asks for a signature.</p>';
+  mBody.innerHTML=h;
+  mBody.querySelectorAll('.wopt[data-u]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var u=b.getAttribute('data-u'), p=u==='legacy'?listOptions()[0]:W.providers[u];
+      b.classList.add('busy'); var bd=b.querySelector('.badge'); if(bd) bd.textContent='CHECK YOUR WALLET…';
+      connect(p).catch(function(e){ renderPicker(niceErr(e)); });
+    });
+  });
+  mBody.querySelectorAll('.wopt[data-k]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var k=b.getAttribute('data-k'), hp=mBody.querySelector('.whelp[data-h="'+k+'"]'), open=!hp.classList.contains('show');
+      mBody.querySelectorAll('.whelp').forEach(function(x){ x.classList.remove('show'); });
+      mBody.querySelectorAll('.wopt[data-k]').forEach(function(x){ x.classList.remove('open'); });
+      if(open){ hp.classList.add('show'); b.classList.add('open'); }
+    });
+  });
+  mBody.querySelectorAll('[data-act="wc"]').forEach(function(b){ b.addEventListener('click',function(){ connectWC().catch(function(e){ renderPicker(niceErr(e)); }); }); });
+  mBody.querySelectorAll('[data-act="copy"]').forEach(function(b){ b.addEventListener('click',function(){ var t=b.textContent; navigator.clipboard.writeText(pageUrl()).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent=t; },1200); }); }); });
+}
+function niceErr(e){
+  var c=e&&(e.code||(e.data&&e.data.originalError&&e.data.originalError.code));
+  if(c===4001) return 'Request rejected in the wallet.';
+  if(c===-32002) return 'Your wallet already has a pending request. Open it and finish or cancel that first.';
+  if(e&&/Connection request reset|User closed modal|Modal closed/i.test(e.message||'')) return 'QR window closed before the wallet connected.';
+  return (e&&e.message)?e.message.slice(0,160):'Something went wrong while connecting.';
+}
+function req(method,params){ return W.prov.request({method:method,params:params||[]}); }
+
+function switchChain(){
+  return req('wallet_switchEthereumChain',[{chainId:CHAIN.chainId}]).catch(function(e){
+    var c=e&&(e.code||(e.data&&e.data.originalError&&e.data.originalError.code));
+    if(c===4902||c===-32603||/unrecognized|not added|unknown chain/i.test(e&&e.message||'')){
+      return req('wallet_addEthereumChain',[CHAIN]);
+    }
+    throw e;
+  }).then(function(){ return req('eth_chainId'); }).then(function(id){ W.chain=id; });
+}
+
+var bound=null;
+function bind(p){
+  if(bound===p||!p.on) return;
+  if(bound&&bound.removeListener){ try{ bound.removeListener('accountsChanged',onAcc); bound.removeListener('chainChanged',onChain); bound.removeListener('disconnect',onDisc); }catch(e){} }
+  p.on('accountsChanged',onAcc); p.on('chainChanged',onChain);
+  if(W.info&&W.info.rdns==='walletconnect') p.on('disconnect',onDisc);
+  bound=p;
+}
+function onAcc(a){ if(!a||!a.length){ disconnect(true); return; } W.addr=a[0]; W.eth=null; W.bal=null; refresh(); }
+function onChain(id){ W.chain=typeof id==='number'?'0x'+id.toString(16):id; refresh(); }
+function onDisc(){ disconnect(true); }
+
+function afterConnect(){
+  store('lp_wallet',W.info.rdns||W.info.uuid);
+  refresh(); renderAccount();
+  say('Connected '+short(W.addr)+(isOk()?' on Robinhood Chain':''));
+  beep(660,990,.12,'triangle',.05);
+}
+function connect(p){
+  if(!p) return Promise.reject(new Error('No wallet selected.'));
+  W.prov=p.provider; W.info=p.info;
+  return req('eth_requestAccounts').then(function(a){
+    if(!a||!a.length) throw new Error('The wallet returned no accounts.');
+    W.addr=a[0]; bind(W.prov);
+    return req('eth_chainId');
+  }).then(function(id){
+    W.chain=id;
+    if(!isOk()) return switchChain().catch(function(e){ say('Connected, but still on another network. '+niceErr(e)); });
+  }).then(afterConnect);
+}
+
+/* WalletConnect — loaded only when used */
+var WCP=null;
+function loadWC(){
+  if(window.HP_WC) return Promise.resolve(window.HP_WC);
+  return new Promise(function(res,rej){
+    var s=document.createElement('script'); s.src='assets/wc.js'; s.async=true;
+    s.onload=function(){ window.HP_WC?res(window.HP_WC):rej(new Error('WalletConnect failed to load.')); };
+    s.onerror=function(){ rej(new Error('WalletConnect failed to load. Check your connection.')); };
+    document.head.appendChild(s);
+  });
+}
+function initWC(){
+  if(WCP) return Promise.resolve(WCP);
+  return loadWC().then(function(EP){
+    return EP.init({
+      projectId:WC_ID, optionalChains:[4663], showQrModal:true,
+      rpcMap:{4663:CHAIN.rpcUrls[0]},
+      metadata:{name:'LockPad',description:'Liquidity locked forever. The fees are yours to keep or sell.',url:location.origin,icons:[location.origin+location.pathname.replace(/[^/]*$/,'')+'favicon.png']},
+      qrModalOptions:{themeMode:'dark'}
+    });
+  }).then(function(p){ WCP=p; return p; });
+}
+function connectWC(){
+  if(!WC_ID) return Promise.reject(new Error('WalletConnect is not configured yet.'));
+  closeModal();
+  return initWC().then(function(p){
+    W.prov=p; W.info={uuid:'walletconnect',name:'WalletConnect',rdns:'walletconnect'};
+    return (p.session?Promise.resolve():p.connect({optionalChains:[4663],rpcMap:{4663:CHAIN.rpcUrls[0]}})).then(function(){
+      var a=p.accounts||[]; if(!a.length) throw new Error('The wallet returned no accounts.');
+      W.addr=a[0]; W.chain='0x'+Number(p.chainId||4663).toString(16); bind(p);
+      if(!isOk()) return switchChain().catch(function(e){ say('Connected, but the wallet did not switch to Robinhood Chain. '+niceErr(e)); });
+    });
+  }).then(function(){ openModal(); afterConnect(); }).catch(function(e){ openModal(); throw e; });
+}
+
+function disconnect(silent){
+  if(W.prov&&!silent){
+    if(W.info&&W.info.rdns==='walletconnect'){ try{ W.prov.disconnect().catch(function(){}); }catch(e){} }
+    else { try{ req('wallet_revokePermissions',[{eth_accounts:{}}]).catch(function(){}); }catch(e){} }
+  }
+  W.addr=null; W.chain=null; W.eth=null; W.bal=null;
+  store('lp_wallet',null);
+  paint();
+  if(ov.classList.contains('show')) renderPicker();
+  if(!silent) say('Disconnected');
+}
+
+function refresh(){
+  paint();
+  if(!W.addr||!isOk()){ if(ov.classList.contains('show')&&W.addr) renderAccount(); return; }
+  var addr=W.addr;
+  req('eth_getBalance',[addr,'latest']).then(function(b){ if(addr!==W.addr) return; W.eth=b; if(ov.classList.contains('show')) renderAccount(); }).catch(function(){});
+  if(TOKCA){
+    var data='0x70a08231'+addr.toLowerCase().replace(/^0x/,'').padStart(64,'0');
+    req('eth_call',[{to:TOKCA,data:'0x313ce567'},'latest']).then(function(d){ var n=parseInt(d,16); if(n>=0&&n<=36) W.dec=n; }).catch(function(){})
+    .then(function(){ return req('eth_call',[{to:TOKCA,data:data},'latest']); })
+    .then(function(b){ if(addr!==W.addr) return; W.bal=b; paint(); if(ov.classList.contains('show')) renderAccount(); }).catch(function(){});
+  }
+}
+
+function paint(){
+  var b=$('wBtn'), b2=$('wBtn2'), tb=$('tokBal'), pw=$('payW');
+  b.classList.remove('bad');
+  if(!W.addr){
+    b.innerHTML='<span class="wl">Connect wallet</span>'; b2.textContent='Connect wallet';
+    tb.textContent='Connect a wallet on Robinhood Chain to see your $LOCKPAD.';
+    
+  } else if(!isOk()){
+    b.classList.add('bad'); b.innerHTML='<span class="net"><i class="wdot bad"></i>Wrong network</span>';
+    b2.textContent='Switch to Robinhood Chain';
+    tb.textContent='Your wallet is on another network. $LOCKPAD lives on Robinhood Chain.';
+    
+  } else {
+    b.innerHTML='<span class="net"><i class="wdot"></i><span class="addr">'+short(W.addr)+'</span></span>';
+    b2.textContent='Wallet connected · '+short(W.addr);
+    tb.innerHTML=!TOKCA?'Balance shows once $LOCKPAD is live · <b>'+short(W.addr)+'</b>':'Your balance · <b>'+(W.bal?fmtUnits(W.bal,W.dec,2):'…')+' $LOCKPAD</b>';
+    
+  }
+}
+
+/* identicon */
+function hsh(s){ var h=2166136261; for(var i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function drawAv(cv,seed){
+  var c=cv.getContext('2d'), r=seed, n=5, u=cv.width/n;
+  function nx(){ r=(Math.imul(r,1664525)+1013904223)>>>0; return r/4294967296; }
+  var cols=['#f2b632','#8fa0b3','#54d98c','#ff8a7e'], col=cols[Math.floor(nx()*4)];
+  c.fillStyle='#0a0c0f'; c.fillRect(0,0,cv.width,cv.height);
+  c.fillStyle=col;
+  for(var y=0;y<n;y++) for(var x=0;x<3;x++) if(nx()<.5){ c.fillRect(x*u,y*u,u,u); c.fillRect((n-1-x)*u,y*u,u,u); }
+}
+
+function renderAccount(){
+  if(!W.addr){ renderPicker(); return; }
+  $('mTitle').textContent='Your wallet';
+  var ok=isOk();
+  var balTxt=!TOKCA?'once live':(W.bal==null?'…':fmtUnits(W.bal,W.dec,2));
+  var h='<div class="wacct">'+
+    '<div class="who"><canvas width="80" height="80" id="accAv"></canvas><div><b>'+short(W.addr)+'</b><span>'+esc(W.info?W.info.name:'Wallet')+'</span></div><button class="btn small cp" id="cpA">Copy</button></div>'+
+    '<div class="wkv">'+
+      '<div><span>Network</span>'+(ok?'<b class="ok">Robinhood Chain</b>':'<b class="bad">chain '+parseInt(W.chain,16)+'</b>')+'</div>'+
+      '<div><span>ETH</span><b>'+(ok?(W.eth?fmtUnits(W.eth,18,5):'…'):'—')+'</b></div>'+
+      '<div><span>$LOCKPAD</span><b>'+(ok?balTxt:'—')+'</b></div>'+
+      '<div><span>Keys held</span><b>'+(ok?'once locks are live':'—')+'</b></div>'+
+    '</div>';
+  if(ok){ h+='<div class="lastq"><h4>KEYS AND CLAIMS</h4>Keys you hold and fees paid to them will show here once locks are live. This page only reads your address and balance. It never asks for a signature or a transaction.</div>'; }
+  h+='<div class="btns">'+(ok?'<a class="btn small" target="_blank" rel="noopener" href="'+CHAIN.blockExplorerUrls[0]+'/address/'+W.addr+'">Explorer ↗</a>':'<button class="btn small acc" id="swN">Switch network</button>')+
+    '<button class="btn small" id="dcB">Disconnect</button></div>'+
+  '</div>';
+  mBody.innerHTML=h;
+  drawAv($('accAv'),hsh(W.addr.toLowerCase()));
+  $('cpA').addEventListener('click',function(){ var b=this; navigator.clipboard.writeText(W.addr).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy'; },1200); }); });
+  $('dcB').addEventListener('click',function(){ disconnect(false); });
+  if($('swN')) $('swN').addEventListener('click',function(){ switchChain().then(refresh).catch(function(e){ say(niceErr(e)); }); });
+}
+
+/* silent reconnect */
+(function(){
+  var last=store('lp_wallet'); if(!last) return;
+  if(last==='walletconnect'){
+    if(!WC_ID) return;
+    initWC().then(function(p){
+      if(!p.session||!(p.accounts||[]).length) return;
+      W.prov=p; W.info={uuid:'walletconnect',name:'WalletConnect',rdns:'walletconnect'};
+      W.addr=p.accounts[0]; W.chain='0x'+Number(p.chainId||4663).toString(16); bind(p); refresh();
+    }).catch(function(){});
+    return;
+  }
+  setTimeout(function(){
+    var list=listOptions(), p=null;
+    list.forEach(function(x){ if(x.info.rdns===last||x.info.uuid===last) p=x; });
+    if(!p&&last==='legacy') p=list[0];
+    if(!p) return;
+    p.provider.request({method:'eth_accounts'}).then(function(a){
+      if(!a||!a.length) return;
+      W.prov=p.provider; W.info=p.info; W.addr=a[0]; bind(W.prov);
+      return W.prov.request({method:'eth_chainId'}).then(function(id){ W.chain=id; refresh(); });
+    }).catch(function(){});
+  },350);
+})();
+
+paint();
+window.__uww=W;
+})();
+</script>
+</body>
+</html>
